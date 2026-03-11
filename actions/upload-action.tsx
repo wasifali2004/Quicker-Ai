@@ -3,33 +3,11 @@
 import { getDBConnection } from "@/lib/db";
 import { generateSummaryFromGemini } from "@/lib/geminiai";
 import { fetchAndExtractPDFText } from "@/lib/langchain";
-import { generateSummaryFromOpenAI } from "@/lib/openai";
 import { formatFileNameAsTitle } from "@/utils/format-utils";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
-type UploadResponse = [
-  {
-    serverData: {
-      userId: string;
-      file: {
-        url: string;
-        name: string;
-      };
-    };
-  }
-];
-
 export const generatePDFSummary = async ({fileUrl, fileName}: {fileUrl:string, fileName:string}) => {
-  if (!fileUrl) {
-    return {
-      success: false,
-      message: "File upload failed",
-      data: null,
-    };
-  }
-
-
   if (!fileUrl) {
     return {
       success: false,
@@ -41,46 +19,25 @@ export const generatePDFSummary = async ({fileUrl, fileName}: {fileUrl:string, f
   try {
     const pdfText = await fetchAndExtractPDFText(fileUrl);
     console.log(pdfText);
-    let summary;
 
+    // Unified cascade: tries GPT-4o → GPT-4o Mini → Gemini 2.5 Flash → Gemini 2.0 Flash → Gemini 1.5 Flash
+    let summary: string | undefined;
     try {
-      summary = await generateSummaryFromOpenAI(pdfText);
-      console.log(summary);
-    } catch (openAIError: any) {
-      console.log("OpenAI failed:", openAIError.message);
-
-      if (
-        openAIError.status === 429 ||
-        openAIError.code === "insufficient_quota" ||
-        openAIError.message === "RATE_LIMIT_EXCEEDED"
-      ) {
-        console.log("OpenAI quota exceeded, trying Gemini...");
-
-        try {
-          summary = await generateSummaryFromGemini(pdfText);
-          console.log("Gemini succeeded:", summary);
-        } catch (geminiError: any) {
-          console.error("Gemini also failed:", geminiError.message);
-
-          return {
-            success: false,
-            message: `Both AI providers failed. OpenAI: ${openAIError.message}. Gemini: ${geminiError.message}`,
-            data: null,
-          };
-        }
-      } else {
-        return {
-          success: false,
-          message: `OpenAI error: ${openAIError.message}`,
-          data: null,
-        };
-      }
+      summary = await generateSummaryFromGemini(pdfText);
+      console.log("✨ Summary generated:", summary);
+    } catch (aiError: any) {
+      console.error("All AI providers failed:", aiError.message);
+      return {
+        success: false,
+        message: `AI generation failed: ${aiError.message}`,
+        data: null,
+      };
     }
 
     if (!summary) {
       return {
         success: false,
-        message: "Failed to generate summary from both providers",
+        message: "Failed to generate summary",
         data: null,
       };
     }
