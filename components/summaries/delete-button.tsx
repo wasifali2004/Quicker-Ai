@@ -1,72 +1,77 @@
-'use client'
+"use client";
 
-import React, { useTransition } from "react";
-import { Button } from "../ui/button";
-import { Trash2 } from "lucide-react";
-import { useState } from "react";
+import React, { useTransition, useState } from "react";
+import { Trash2, AlertTriangle } from "lucide-react";
 import {
-  DialogFooter,
   Dialog,
   DialogTrigger,
   DialogHeader,
   DialogContent,
   DialogDescription,
   DialogTitle,
+  DialogFooter,
 } from "../ui/dialog";
 import { DeleteSummaryAction } from "@/actions/summary-action";
 import { toast } from "sonner";
 
+const DeleteButton = ({ summaryId }: { summaryId: string }) => {
+  const [open, setOpen] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
-
-
-const DeleteButton = ({summaryId}:{summaryId: string}) => {
-  const [Open, setOpen] = useState(false)
-  const [isPending, startTransition] = useTransition()
-
-  const handleDelete = async () => {
-    startTransition(async () =>{
-    const result = await DeleteSummaryAction(summaryId)
-    if(!result) {
-      console.log("Error in deleting")
-    }
-    toast.success("Summary Deleted", {
-      position: "top-center"
-    })
-    setOpen(false)
-    })
-  }
+  const handleDelete = () => {
+    startTransition(async () => {
+      const result = await DeleteSummaryAction(summaryId);
+      if (!result) {
+        toast.error("Failed to delete summary. Please try again.", {
+          position: "top-center",
+        });
+        return;
+      }
+      toast.success("Summary deleted", { position: "top-center" });
+      setOpen(false);
+    });
+  };
 
   return (
-    <Dialog open={Open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant={"ghost"}
-          size="icon"
-          className="text-gray-400 bg-gray-50 border border-gray-200 hover:text-white hover:bg-rose-500"
+        <button
+          onClick={(e) => e.stopPropagation()}
+          aria-label="Delete summary"
+          className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-200 transition-all duration-150"
         >
-          <Trash2 className="w-4 h-4" />
-        </Button>
+          <Trash2 className="w-3.5 h-3.5" />
+        </button>
       </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Delete Summary</DialogTitle>
-          <DialogDescription>
-           Are you sure you want to delete this summary? This action cannot be undone.
+
+      <DialogContent className="max-w-sm rounded-2xl">
+        <DialogHeader className="text-center pb-2">
+          <div className="mx-auto w-12 h-12 rounded-full bg-rose-50 flex items-center justify-center mb-3">
+            <AlertTriangle className="w-6 h-6 text-rose-500" />
+          </div>
+          <DialogTitle className="text-base font-semibold text-slate-800">
+            Delete this summary?
+          </DialogTitle>
+          <DialogDescription className="text-sm text-slate-500 mt-1">
+            This action cannot be undone. The summary will be permanently removed.
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter>
-          <Button onClick={() => setOpen(false)}
-          variant={"ghost"}
-          className=" bg-gray-50 border border-gray-200 hover:text-white hover:bg-rose-500"
-        >
-          Cancel
-        </Button>
-        <Button onClick={handleDelete}
-          variant={"destructive"}
-          className=" bg-gray-900 hover:bg-gray-600"
-        >
-          {isPending? "Deleting...":"Delete"}
-        </Button>
+
+        <DialogFooter className="flex gap-2 pt-2">
+          <button
+            onClick={() => setOpen(false)}
+            disabled={isPending}
+            className="flex-1 px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors duration-150 disabled:opacity-50"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleDelete}
+            disabled={isPending}
+            className="flex-1 px-4 py-2 text-sm font-medium text-white bg-rose-500 hover:bg-rose-600 active:scale-95 rounded-xl transition-all duration-150 disabled:opacity-60"
+          >
+            {isPending ? "Deleting…" : "Delete"}
+          </button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

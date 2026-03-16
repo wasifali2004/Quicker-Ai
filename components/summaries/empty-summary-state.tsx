@@ -1,24 +1,26 @@
-import { FileText } from "lucide-react";
 import React from "react";
-import { Button } from "../ui/button";
 import Link from "next/link";
+import { FileSearch, Upload } from "lucide-react";
 
 const EmptySummaryState = () => {
   return (
-    <div className="text-center py-12">
-      <div className="flex flex-col items-center gap-4">
-        <FileText className="w-16 h-16 text-gray-400" />
-        <h3 className="text-xl font-semibold text-gray-600">No Summaries Yet</h3>
-        <p className="text-gray-500 max-w-md">Upload your first PDF to get started with AI-Powered Summaries</p>
-        <Link href="/upload">
-          <Button
-            value={"link"}
-            className="mt-4 text-white bg-linear-to-r from-rose-500 to-rose-700 hover:from-rose-600 hover:to-rose-800 hover:no-underline "
-          >
-            Create Your First Summary
-          </Button>
-        </Link>
+    <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
+      <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center mb-4">
+        <FileSearch className="w-8 h-8 text-slate-400" />
       </div>
+      <h3 className="text-lg font-semibold text-slate-800 mb-1">
+        No summaries yet
+      </h3>
+      <p className="text-sm text-slate-500 max-w-xs mb-6">
+        Upload a PDF and we'll turn it into a clear, structured summary in seconds.
+      </p>
+      <Link
+        href="/upload"
+        className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-rose-500 hover:bg-rose-600 active:scale-95 transition-all duration-200 rounded-xl shadow-sm shadow-rose-200"
+      >
+        <Upload className="w-4 h-4" />
+        Upload your first PDF
+      </Link>
     </div>
   );
 };

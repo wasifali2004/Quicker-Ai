@@ -1,77 +1,92 @@
+"use client";
+
 import React from "react";
-import { Card } from "../ui/card";
-import DeleteButton from "./delete-button";
 import Link from "next/link";
-import { FileText } from "lucide-react";
+import { FileText, Clock, Trash2, CheckCircle2, Loader2 } from "lucide-react";
 import { cn, formatFileName } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
-
-const SummaryHeader = ({
-  fileUrl,
-  title,
-  createdAt,
-}: {
-  fileUrl: string;
-  title: string | null;
-  createdAt: string;
-}) => (
-  <div className="flex items-start gap-3 mb-3">
-    <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-rose-400 flex-shrink-0 mt-1" />
-    <div className="flex-1 min-w-0">
-      <h3 className="text-base xl:text-lg font-semibold text-gray-900 truncate mb-1">
-        {title || formatFileName(fileUrl)}
-      </h3>
-      <p className="text-sm text-gray-500">
-        {createdAt
-          ? formatDistanceToNow(new Date(createdAt), {
-              addSuffix: true,
-            })
-          : "No date"}
-      </p>
-    </div>
-  </div>
-);
-
-const StatusBadge = ({ status }: { status: string }) => {
-  return (
-    <span
-      className={cn(
-        "px-3 py-1 text-xs font-medium rounded-full capitalize",
-        status === "completed"
-          ? "bg-green-100 text-green-800"
-          : "bg-yellow-100 text-yellow-800"
-      )}
-    >
-      {status}
-    </span>
-  );
-};
+import DeleteButton from "./delete-button";
 
 const SummaryCard = ({ summary }: { summary: any }) => {
+  const isCompleted = summary.status === "completed";
+  const displayTitle = summary.title || formatFileName(summary.original_file_url || "");
+  const timeAgo = summary.created_at
+    ? formatDistanceToNow(new Date(summary.created_at), { addSuffix: true })
+    : "Unknown date";
+
+  // Pull a snippet: first 140 chars of summary text, stripped of markdown
+  const snippet = (summary.summary_text || "")
+    .replace(/^#+\s+/gm, "")
+    .replace(/^[•\-\*]\s+/gm, "")
+    .replace(/\p{Emoji_Presentation}/gu, "")
+    .trim()
+    .slice(0, 140);
+
   return (
-    <Card className="relative h-full p-4 hover:shadow-lg transition-shadow duration-200">
-      <div className="absolute top-4 right-4 z-10">
+    <div className="group relative bg-white rounded-2xl border border-slate-200 hover:border-rose-200 hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col">
+      {/* Top accent line */}
+      <div className={cn(
+        "h-0.5 w-full",
+        isCompleted
+          ? "bg-gradient-to-r from-rose-400 to-orange-400"
+          : "bg-gradient-to-r from-slate-300 to-slate-200"
+      )} />
+
+      {/* Delete button — positioned inside */}
+      <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
         <DeleteButton summaryId={summary.id} />
       </div>
 
-      <div className="mb-3">
-        <StatusBadge status={summary.status} />
-      </div>
+      {/* Card body — entire card is a link except delete button */}
+      <Link href={`/summaries/${summary.id}`} className="flex flex-col flex-1 p-5">
+        {/* Header row */}
+        <div className="flex items-start gap-3 mb-3 pr-8">
+          <div className={cn(
+            "w-9 h-9 rounded-xl flex items-center justify-center shrink-0",
+            isCompleted ? "bg-rose-50 text-rose-500" : "bg-slate-50 text-slate-400"
+          )}>
+            <FileText className="w-4.5 h-4.5" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-sm font-semibold text-slate-800 leading-snug line-clamp-2 group-hover:text-rose-600 transition-colors">
+              {displayTitle}
+            </h3>
+            <p className="text-xs text-slate-400 mt-0.5 flex items-center gap-1">
+              <Clock className="w-3 h-3" />
+              {timeAgo}
+            </p>
+          </div>
+        </div>
 
-      <Link href={`/summaries/${summary.id}`} className="block">
-        <div className="pr-8">
-          {" "}
-          <SummaryHeader
-            fileUrl={summary.original_file_url}
-            title={summary.title}
-            createdAt={summary.created_at}
-          />
-          <p className="text-gray-600 line-clamp-3 text-sm sm:text-base leading-relaxed">
-            {summary.summary_text}
+        {/* Snippet */}
+        {snippet && (
+          <p className="text-xs text-slate-500 leading-relaxed line-clamp-3 mb-4">
+            {snippet}…
           </p>
+        )}
+
+        {/* Footer */}
+        <div className="mt-auto flex items-center justify-between pt-3 border-t border-slate-100">
+          <span className={cn(
+            "inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full",
+            isCompleted
+              ? "bg-emerald-50 text-emerald-700"
+              : "bg-amber-50 text-amber-700"
+          )}>
+            {isCompleted ? (
+              <CheckCircle2 className="w-3 h-3" />
+            ) : (
+              <Loader2 className="w-3 h-3 animate-spin" />
+            )}
+            {isCompleted ? "Ready" : "Processing"}
+          </span>
+
+          <span className="text-xs text-rose-500 font-medium group-hover:translate-x-0.5 transition-transform inline-block">
+            Read →
+          </span>
         </div>
       </Link>
-    </Card>
+    </div>
   );
 };
 

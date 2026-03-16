@@ -72,13 +72,13 @@ export async function POST(request: Request) {
     return new Response("No messages provided", { status: 400 });
   }
 
-  const modelMessages: ModelMessage[] = await convertToModelMessages(messages);
+  const modelMessages = await convertToModelMessages(messages);
 
   function streamResponse(model: AnyModel) {
     const result = streamText({
       model,
       system: initialMessage.content,
-      messages: modelMessages,
+      messages: modelMessages as any,
       temperature: 0.7,
       maxOutputTokens: 2048,
     });

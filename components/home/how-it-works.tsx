@@ -1,91 +1,100 @@
-import { BrainCircuit, FileOutput, FileText, MoveRight } from "lucide-react";
-import React from "react";
+import { Upload, Cpu, BookOpen, MoveRight } from "lucide-react";
 
-type Step = {
-    icon: React.ReactNode,
-    label: string,
-    description: string
-}
-
-const steps: Step[] = [
-    {
-        icon: <FileText size={64} strokeWidth={1.5}/>,
-        label: "Upload your PDF",
-        description: "Simply drag and drop your PDF document or click to upload."
-    },
-    {
-        icon: <BrainCircuit size={64} strokeWidth={1.5}/>,
-        label: "AI Analysis",
-        description: "Our advanced AI processes and analyzes your document instantly"
-    },
-    {
-        icon: <FileOutput size={64} strokeWidth={1.5}/>,
-        label: "Get Summary",
-        description: "Recieve a clear, concise summary of your document "
-    },
-]
-
+const steps = [
+  {
+    number: "01",
+    icon: Upload,
+    label: "Upload your PDF",
+    description:
+      "Drag & drop or click to upload any PDF — research papers, reports, books, contracts. Up to 20MB supported.",
+    color: "text-blue-600",
+    bg: "bg-blue-50",
+    border: "border-blue-100",
+  },
+  {
+    number: "02",
+    icon: Cpu,
+    label: "AI analysis",
+    description:
+      "Our AI reads your document in seconds, identifying key points, insights, and the most important information.",
+    color: "text-rose-600",
+    bg: "bg-rose-50",
+    border: "border-rose-100",
+  },
+  {
+    number: "03",
+    icon: BookOpen,
+    label: "Get your summary",
+    description:
+      "Receive a structured, beautifully formatted summary. Navigate by section, download, or share with your team.",
+    color: "text-emerald-600",
+    bg: "bg-emerald-50",
+    border: "border-emerald-100",
+  },
+];
 
 const HowItWorksSection = () => {
   return (
-    <div className="py-12 lg:py-24 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 transform-gpu overflow-hidden blur-3xl"
-      >
-        <div
-          className="relative left-[calc(50%-3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 opacity-30 sm:left-[calc(50%-36rem)] sm:w-[72.1875rem]"
-          style={{
-            clipPath:
-              "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
-          }}
-        />
-      </div>
-
-      <div className="text-center mb-16">
-        <h2 className="font-bold text-xl uppercase mb-4 text-rose-500">
-          How it works
-        </h2>
-        <h3 className="font-bold text-3xl max-w-2xl mx-auto">
-          Transform any PDF into an easy-to-digest summary in three simple steps
-        </h3>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto relative">
-          {steps.map((step, idx) => (
-            <div className="relative flex items-stretch"  key={idx}>
-                <StepItem {...step} />
-
-                {idx <steps.length - 1 && (
-                <div className="hidden md:block top-1/2 absolute -right-4 transform -translate-y-1/2 z-10">
-                <MoveRight size={32} strokeWidth={1} className="text-rose-400" />
-                </div>
-                )}
-            </div>
-          ))}
-      </div>
-    </div>
-  );
-};
-
-
-
-function StepItem({ icon, label, description }: Step) {
-  return (
-    <div className="relative p-6 rounded-2xl bg-white/5 backdrop-blur-xs border border-white/10 hover:border-rose-500/20 transition-colors group w-full">
-      <div className="flex flex-col gap-4 h-full">
-        <div className="flex items-center justify-center h-24 w-24 mx-auto rounded-2xl bg-linear-to-r from-rose-500/20 to-transparent group-hover:from-rose-500/20 transition-colors">
-          <div className="text-rose-500">{icon}</div>
-        </div>
-        <div className="flex flex-col flex-1 gap-1 justify-between">
-          <h4 className="text-center font-bold text-xl">{label}</h4>
-          <p className="text-center text-gray-600 text-sm">
-            {description}
+    <section id="how-it-works" className="relative py-20 lg:py-28 bg-gray-50">
+      {/* Subtle border lines */}
+      <div className="container mx-auto px-4">
+        {/* Section label */}
+        <div className="text-center mb-14">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-gray-200 bg-white text-xs font-semibold text-gray-500 uppercase tracking-widest mb-5 shadow-sm">
+            How it works
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
+            From PDF to insight in{" "}
+            <span className="gradient-text">three steps</span>
+          </h2>
+          <p className="mt-4 text-lg text-gray-500 max-w-xl mx-auto">
+            No complex setup. No learning curve. Just upload and summarize.
           </p>
         </div>
+
+        {/* Steps grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto relative">
+          {/* Connector lines (desktop) */}
+          <div className="hidden md:block absolute top-12 left-1/3 right-1/3 h-px bg-gradient-to-r from-gray-200 via-rose-200 to-gray-200" />
+
+          {steps.map((step, idx) => {
+            const Icon = step.icon;
+            return (
+              <div key={idx} className="relative group">
+                <div className="h-full flex flex-col p-7 rounded-2xl bg-white border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition-all duration-300">
+                  {/* Number + Icon row */}
+                  <div className="flex items-center justify-between mb-5">
+                    <span className="text-4xl font-black text-gray-100 select-none">
+                      {step.number}
+                    </span>
+                    <div
+                      className={`w-11 h-11 rounded-xl ${step.bg} ${step.border} border flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}
+                    >
+                      <Icon className={`w-5 h-5 ${step.color}`} />
+                    </div>
+                  </div>
+
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    {step.label}
+                  </h3>
+                  <p className="text-sm text-gray-500 leading-relaxed flex-1">
+                    {step.description}
+                  </p>
+
+                  {/* Arrow connector for mobile */}
+                  {idx < steps.length - 1 && (
+                    <div className="flex justify-center mt-4 md:hidden">
+                      <MoveRight className="w-5 h-5 text-gray-300 rotate-90" />
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
-    </div>
+    </section>
   );
-}
+};
 
 export default HowItWorksSection;

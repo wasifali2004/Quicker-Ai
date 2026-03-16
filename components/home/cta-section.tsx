@@ -1,36 +1,50 @@
 import Link from "next/link";
-import { Button } from "../ui/button";
 import { ArrowRight } from "lucide-react";
 
 export default function CTASection() {
   return (
-    <section className="bg-gray-50 py-12">
-      <div className="py-12 lg:py-24 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center justify-center space-y-4 text-center">
-          <div>
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-              Ready to Save Hours of Reading Time?
+    <section className="py-20 lg:py-28 bg-white">
+      <div className="container mx-auto px-4">
+        <div className="relative max-w-4xl mx-auto rounded-3xl overflow-hidden">
+          {/* Background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900" />
+          <div className="absolute inset-0 dot-grid opacity-10" />
+
+          {/* Glow accents */}
+          <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-rose-600/20 blur-3xl" />
+          <div className="absolute -bottom-20 -left-20 w-64 h-64 rounded-full bg-rose-600/10 blur-3xl" />
+
+          {/* Content */}
+          <div className="relative px-8 py-14 sm:px-14 sm:py-16 text-center">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight">
+              Start reading smarter{" "}
+              <span className="text-rose-400">today</span>
             </h2>
-            <p className=" text-gray-500 max-w-[700px] md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-              Transform lengthy documents into clear, actionable insights with
-              our AI-powered summarizer.
+            <p className="mt-5 text-lg text-gray-300 max-w-xl mx-auto leading-relaxed">
+              Join 10,000+ professionals who save hours every week with Quicker.
+              Your first 5 summaries are completely free.
             </p>
-          </div>
-          <div className="flex flex-col gap-2 min-[400px]:flex-row justify-center">
-            <Button
-              size="lg"
-              variant={"link"}
-              className="w-full min-[400px]:w-auto bg-gradient-to-r from-slate-900 to-rose-500 hover:from-rose-500 hover:to-slate-900 hover:text-white text-white transition-all duration-300"
-              
-            >
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-10">
+              <Link
+                href="/upload"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-rose-600 text-white font-semibold text-base hover:bg-rose-500 transition-all duration-200 shadow-lg shadow-rose-900/50 hover:-translate-y-0.5 group"
+              >
+                Get started free
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-200" />
+              </Link>
               <Link
                 href="/#pricing"
-                className="flex items-center justify-center"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-xl border border-white/10 text-white/80 font-semibold text-base hover:bg-white/5 hover:border-white/20 hover:text-white transition-all duration-200"
               >
-                Get Started
-                <ArrowRight className="ml-2 h-4 w-4 animate-pulse" />
+                View pricing
               </Link>
-            </Button>
+            </div>
+
+            {/* Trust note */}
+            <p className="mt-6 text-xs text-gray-500">
+              No credit card required · Free plan available · Cancel anytime
+            </p>
           </div>
         </div>
       </div>
